@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Approve Bakers{% endblock %}
+
+{% block content %}
+<h1>Pending Baker Approvals</h1>
+
+{% if bakers %}
+<ul>
+  {% for baker in bakers %}
+  <li>
+    <strong>{{ baker.username }}</strong>
+    <strong>Bakery Name:</strong> {{ baker.baker_profile.bakery_name if baker.baker_profile else 'N/A' }}<br>
+    <strong>Phone:</strong> {{ baker.baker_profile.phone if baker.baker_profile else 'N/A' }}<br>
+    <strong>Address:</strong> {{ baker.baker_profile.address if baker.baker_profile else 'N/A' }}<br>
+    <strong>Description:</strong> {{ baker.baker_profile.description if baker.baker_profile else 'N/A' }}<br>
+
+
+    <form method="POST" action="{{ url_for('approve_baker', user_id=baker.id) }}" style="display:inline;">
+      {{ approve_form.hidden_tag() }}
+      {{ approve_form.submit() }}
+    </form>
+
+    <form method="POST" action="{{ url_for('decline_baker', user_id=baker.id) }}" style="display:inline;">
+      {{ decline_form.hidden_tag() }}
+      {{ decline_form.submit(value='Decline') }}
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No pending baker approvals.</p>
+{% endif %}
+
+<br>
+<a href="{{ url_for('index') }}">Back to index</a>
+{% endblock %}

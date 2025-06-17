@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Register Page{% endblock %}
+
+{% block content %}
+  <h1>register</h1>
+   <form method="POST" action="">
+    
+    {{  form.hidden_tag()  }}
+    <div>
+      {{ form.username.label }}<br>
+      {{ form.username(size=32) }}
+    </div>
+
+    <div>
+      {{ form.password.label }}<br>
+      {{ form.password(size=32) }}
+    </div>
+
+    <div>
+      {{ form.role.label }}<br>
+      {% for subfield in form.role %}
+        <label>{{ subfield() }} {{ subfield.label.text }}</label><br>
+      {% endfor %}
+    </div>
+
+    <div id="baker-fields" style="display: none;">
+        {{ form.bakery_name.label }}<br>
+        {{ form.bakery_name }}<br>
+        {{ form.phone.label }}<br>
+        {{ form.phone }}<br>
+        {{ form.address.label }}<br>
+        {{ form.address }}<br>
+        {{ form.description.label }}<br>
+        {{ form.description }}<br>
+    </div>
+
+    <div>
+      {{ form.submit() }}
+    </div>
+
+  </form>
+  <a href="{{  url_for('login')  }}">Already have an account? Login</a> <br>
+
+  <script>
+    const roleInputs = document.querySelectorAll('input[name="role"]');
+    const bakerFields = document.getElementById('baker-fields');
+
+    roleInputs.forEach(input => {
+        input.addEventListener('change', () => {
+            bakerFields.style.display = input.value === 'baker' ? 'block' : 'none';
+        });
+    });
+
+    window.addEventListener('load', () => {
+        const selected = document.querySelector('input[name="role"]:checked');
+        if (selected && selected.value === 'baker') {
+            bakerFields.style.display = 'block';
+        }
+    });
+  </script>
+{% endblock %}

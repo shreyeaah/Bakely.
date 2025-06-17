@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Index Page{% endblock %}
+
+{% block content %}
+  <h1>Authentication System</h1>
+  <a href="{{  url_for('login')  }}">Login</a> <br>
+  <a href="{{  url_for('register')  }}">Register</a>
+
+{% endblock %}
