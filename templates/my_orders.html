@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+  <h2>My Orders</h2>
+
+  {% if orders %}
+    <ul>
+      {% for order in orders %}
+        <li>
+          <strong>Item:</strong> {{ order.menu_item.name }} <br>
+          <strong>Bakery:</strong> {{ order.baker.baker_profile.bakery_name }} <br>
+          <strong>Price:</strong> ₹{{ order.menu_item.price }} <br>
+
+          {% set color = 'orange' %}
+          {% if order.status == 'Accepted' %}
+          {% set color = 'green' %}
+          {% elif order.status == 'Declined' %}
+          {% set color = 'red' %}
+          {% elif order.status == 'Ready' %}
+          {% set color = 'blue' %}
+          {% elif order.status == 'Delivered' %}
+          {% set color = 'gray' %}
+          {% endif %}
+
+
+          <strong>Status:</strong>
+          <span style="color: '{{ color }}'">{{ order.status }}</span><br>
+
+          <hr>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven't placed any orders yet.</p>
+  {% endif %}
+{% endblock %}

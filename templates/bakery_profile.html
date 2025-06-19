@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ baker.baker_profile.bakery_name }}{% endblock %}
+
+{% block content %}
+<div class="bakery-profile" style="text-align: center; padding: 1rem;">
+
+  {% if baker.baker_profile.banner %}
+    <img src="{{ url_for('static', filename='uploads/' + baker.baker_profile.banner) }}" 
+         alt="Banner" style="width: 100%; max-height: 300px; object-fit: cover;">
+  {% endif %}
+
+  {% if baker.baker_profile.logo %}
+    <img src="{{ url_for('static', filename='uploads/' + baker.baker_profile.logo) }}"
+         alt="Logo" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid #ccc; margin-top: -60px; background: white;">
+  {% endif %}
+
+  <h2>{{ baker.baker_profile.bakery_name or baker.username }}</h2>
+
+  <p><strong>Phone:</strong> {{ baker.baker_profile.phone }}</p>
+  <p><strong>Address:</strong> {{ baker.baker_profile.address }}</p>
+  <p><strong>About Us:</strong> {{ baker.baker_profile.description }}</p>
+
+  
+
+  <div style="margin-top: 10px;">
+    {% if baker.baker_profile.instagram %}
+      <a href="{{ baker.baker_profile.instagram }}" target="_blank">📸 Instagram</a>
+    {% endif %}
+    {% if baker.baker_profile.facebook %}
+      &nbsp;|&nbsp;
+      <a href="{{ baker.baker_profile.facebook }}" target="_blank">📘 Facebook</a>
+    {% endif %}
+  </div>
+</div>
+
+
+<hr>
+
+<h3 style="text-align: center;">Menu</h3>
+<div class="menu-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+  {% for item in menu_items %}
+    <div class="menu-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; width: 200px;">
+      
+      <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}"
+       width="200"
+       height="150"
+       style="object-fit: cover; border-radius: 6px;">
+
+      <h4>{{ item.name }}</h4>
+      <p><strong>₹{{ item.price }}</strong></p>
+      <p>{{ item.description }}</p>
+      <form method="POST" action="{{ url_for('add_to_cart', item_id=item.id) }}">
+        <button type="submit">Add to Cart</button>
+      </form>
+      
+    </div>
+  {% endfor %}
+</div>
+
+
+
+{% endblock %}

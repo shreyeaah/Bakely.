@@ -1,9 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Index Page{% endblock %}
+{% block title %}Bakely{% endblock %}
 
 {% block content %}
-  <h1>Authentication System</h1>
-  <a href="{{  url_for('login')  }}">Login</a> <br>
-  <a href="{{  url_for('register')  }}">Register</a>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+  .cursive {
+    font-family: 'Great Vibes', cursive;
+  }
+</style>
 
+<div class="min-h-screen flex items-center justify-center bg-red-100">
+  <div class="bg-white rounded-xl shadow-lg p-8 max-w-md text-center">
+    <h1 class="text-5xl text-pink-600 font-bold cursive mb-2">Bakely.</h1>
+    <p class="text-lg text-gray-600 mb-6 italic">Because Happiness Comes Frosted</p>
+
+    <img src="{{ url_for('static', filename='uploads/download.jpeg') }}" alt="Bakely" class="rounded-xl mx-auto mb-6 shadow-md max-h-72 object-cover" />
+
+    <div class="space-x-4">
+      <a href="{{ url_for('login') }}" class="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded-lg shadow">Login</a>
+      <a href="{{ url_for('register') }}" class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg shadow">Register</a>
+    </div>
+  </div>
+</div>
 {% endblock %}

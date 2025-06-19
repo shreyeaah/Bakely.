@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField, FloatField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, RadioField, TextAreaField, FloatField, SelectField, IntegerField
+from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from models import User
 from flask_wtf.file import FileField, FileAllowed
 
@@ -36,9 +36,33 @@ class ApproveForm(FlaskForm):
 class DeclineForm(FlaskForm):
     submit = SubmitField('Decline')
 
-'''class MenuItemForm(FlaskForm):
+class MenuItemForm(FlaskForm):
     name = StringField("Cake Name", validators=[InputRequired()])
     price = FloatField("Price", validators=[InputRequired()])
     description = TextAreaField("Description")
     image = FileField("Image", validators=[FileAllowed(['jpg', 'png', 'jpeg'], "Images only!")])
-    submit = SubmitField("Add Menu Item")'''
+    submit = SubmitField("Submit")
+
+class OrderForm(FlaskForm):
+    weight = FloatField("Weight (kg)", validators=[InputRequired()])
+    shape = SelectField("Shape", choices=[('round', 'Round'), ('square', 'Square'), ('heart', 'Heart')])
+    tiers = IntegerField("Tiers", validators=[InputRequired()])
+    message = TextAreaField("Custom Message")
+    delivery_mode = SelectField("Delivery Mode", choices=[('pickup', 'Pickup'), ('delivery', 'Home Delivery')])
+    payment_mode = SelectField("Payment Mode", choices=[('cod', 'Cash on Delivery'), ('online', 'Online Payment')])
+    submit = SubmitField("Place Order")
+
+
+class BakerProfileForm(FlaskForm):
+    bakery_name = StringField("Bakery Name", validators=[DataRequired()])
+    phone = StringField("Phone", validators=[DataRequired()])
+    address = StringField("Address", validators=[DataRequired()])
+    description = TextAreaField("Description")
+    instagram = StringField("Instagram URL")
+    facebook = StringField("Facebook URL")
+    logo = FileField("Logo", validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+    banner = FileField("Banner", validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+    submit = SubmitField("Update Profile")
+
+
+

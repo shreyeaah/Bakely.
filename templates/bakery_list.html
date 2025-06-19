@@ -1,0 +1,10 @@
+<h2>Available Bakeries</h2>
+<ul>
+  {% for baker in bakers %}
+    <li>
+      <a href="{{ url_for('view_bakery', baker_id=baker.id) }}">
+        {{ baker.baker_profile.bakery_name or baker.username }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>

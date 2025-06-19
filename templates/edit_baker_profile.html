@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<h2>Edit Your Bakery Profile</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+
+  <div>
+    {{ form.bakery_name.label }}<br>
+    {{ form.bakery_name(size=40) }}
+  </div>
+
+  <div>
+    {{ form.phone.label }}<br>
+    {{ form.phone(size=20) }}
+  </div>
+
+  <div>
+    {{ form.address.label }}<br>
+    {{ form.address(size=60) }}
+  </div>
+
+  <div>
+    {{ form.description.label }}<br>
+    {{ form.description(rows=3, cols=60) }}
+  </div>
+
+  
+
+  <div>
+    {{ form.logo.label }}<br>
+    {{ form.logo() }}
+  </div>
+
+  <div>
+    {{ form.banner.label }}<br>
+    {{ form.banner() }}
+  </div>
+
+  <div>
+    {{ form.instagram.label }}<br>
+    {{ form.instagram(size=60) }}
+  </div>
+
+  <div>
+    {{ form.facebook.label }}<br>
+    {{ form.facebook(size=60) }}
+  </div>
+
+  
+
+  <br>
+  <button type="submit">{{ form.submit.label }}</button>
+</form>
+{% endblock %}

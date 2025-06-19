@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Order for {{ item.name }}</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  {{ form.weight.label }} {{ form.weight() }}<br>
+  {{ form.shape.label }} {{ form.shape() }}<br>
+  {{ form.tiers.label }} {{ form.tiers() }}<br>
+  {{ form.message.label }} {{ form.message() }}<br>
+  {{ form.delivery_mode.label }} {{ form.delivery_mode() }}<br>
+  {{ form.payment_mode.label }} {{ form.payment_mode() }}<br>
+  {{ form.submit() }}
+</form>
+{% endblock %}

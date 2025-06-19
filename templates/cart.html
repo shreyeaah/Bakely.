@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Cart</h2>
+<ul>
+  {% for item in cart_items %}
+    <li>
+      <img src="{{ url_for('static', filename='uploads/' ~ item.menu_item.image_filename) }}" width="150"><br>
+      <strong>{{ item.menu_item.name }}</strong> - ₹{{ item.menu_item.price }} × {{ item.quantity }}<br>
+      <em>Bakery:</em> {{ item.menu_item.baker.baker_profile.bakery_name or item.menu_item.baker.username }}<br>
+
+      <form action="{{ url_for('place_order_form', cart_item_id=item.id) }}" method="get">
+        <button type="submit">Order Now</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+
+<p><strong>Total:</strong> ₹{{ total }}</p>
+
+
+{% endblock %}

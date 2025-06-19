@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add Menu Item</h2>
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }} {{ form.name() }}<br>
+    {{ form.price.label }} {{ form.price() }}<br>
+    {{ form.description.label }} {{ form.description() }}<br>
+    {{ form.image.label }} {{ form.image() }}<br>
+    {{ form.submit() }}
+</form>
+{% endblock %}

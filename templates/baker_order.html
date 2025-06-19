@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Baker Orders{% endblock %}
+
+{% block content %}
+  <h2>Incoming Orders</h2>
+
+  {% if orders %}
+    <ul>
+    {% for order in orders %}
+      <li>
+        <strong>Item:</strong> {{ order.menu_item.name }}<br>
+        <strong>Customer:</strong> {{ order.customer.username }}<br>
+        <strong>Quantity:</strong> {{ order.quantity }}<br>
+        <strong>Status:</strong> {{ order.status }}<br>
+
+        {% if order.status == 'Pending' %}
+          <form action="{{ url_for('accept_order', order_id=order.id) }}" method="post" style="display:inline;">
+            <button type="submit">Accept</button>
+          </form>
+
+          <form action="{{ url_for('decline_order', order_id=order.id) }}" method="post" style="display:inline;">
+            <button type="submit">Decline</button>
+          </form>
+        
+        {% elif order.status == 'Accepted' %}
+          <form action="{{ url_for('mark_ready', order_id=order.id) }}" method="post" style="display:inline;">
+            <button type="submit">Mark as Ready</button>
+          </form>
+        
+        {% elif order.status == 'Ready' %}
+          <form action="{{ url_for('mark_delivered', order_id=order.id) }}" method="post" style="display:inline;">
+            <button type="submit">Mark as Delivered</button>
+          </form>
+        {% endif %}
+
+        <hr>
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No orders yet.</p>
+  {% endif %}
+{% endblock %}

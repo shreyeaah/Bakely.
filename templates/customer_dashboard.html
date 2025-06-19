@@ -2,7 +2,32 @@
 {% block title %}Customer Dashboard{% endblock %}
 
 {% block content %}
-  <h1>Welcome, {{ current_user.username }} (Customer)</h1>
-  <p>This is your customer dashboard.</p>
-  <a href="{{ url_for('logout') }}">Logout</a>
+<h1>Welcome, {{ current_user.username }} (Customer)</h1>
+<p>This is your customer dashboard.</p>
+
+<form method="get">
+  <input type="text" name="place" placeholder="Search by location..." value="{{ place }}">
+  <button type="submit">Search</button>
+</form>
+
+<h3>Available Bakeries</h3>
+<ul>
+  {% if bakers %}
+    {% for baker in bakers %}
+      <li>
+        <a href="{{ url_for('view_bakery', baker_id=baker.id) }}">
+          {{ baker.baker_profile.bakery_name or baker.username }}
+        </a>
+     </li>
+    {% endfor %}
+  {% else %}
+    <li>No bakeries found for "{{ place }}".</li>
+  {% endif %}
+</ul>
+<a href="{{ url_for('view_cart') }}">
+  <button>🛒 View Cart</button>
+</a>
+<a href="{{ url_for('my_orders') }}">View My Orders</a>
+
+<a href="{{ url_for('logout') }}">Logout</a>
 {% endblock %}
