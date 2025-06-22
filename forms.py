@@ -41,6 +41,7 @@ class MenuItemForm(FlaskForm):
     price = FloatField("Price", validators=[InputRequired()])
     description = TextAreaField("Description")
     image = FileField("Image", validators=[FileAllowed(['jpg', 'png', 'jpeg'], "Images only!")])
+    category = StringField('Category', validators=[InputRequired()])
     submit = SubmitField("Submit")
 
 class OrderForm(FlaskForm):
@@ -64,5 +65,10 @@ class BakerProfileForm(FlaskForm):
     banner = FileField("Banner", validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
     submit = SubmitField("Update Profile")
 
-
+class BakerPricingForm(FlaskForm):
+    base_price_per_kg = FloatField('Base Price per Kg', validators=[DataRequired()])
+    extra_tier_price = FloatField('Extra Tier Price', validators=[DataRequired()])
+    frosting_prices = TextAreaField('Frosting Prices (JSON format)', validators=[DataRequired()])
+    topper_prices = TextAreaField('Topper Prices (JSON format)', validators=[DataRequired()])
+    submit = SubmitField('Save Pricing')
 

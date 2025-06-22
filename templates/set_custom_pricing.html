@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Set Custom Order Pricing</h2>
+
+  <form method="POST">
+    <!-- Base price -->
+    <div class="form-group mb-3">
+      <label>Base Price per kg (₹)</label>
+      <input type="number" step="10" name="base_price_per_kg" class="form-control"
+             value="{{ pricing.base_price_per_kg or '' }}" required>
+    </div>
+
+    <!-- Tier -->
+    <div class="form-group mb-3">
+      <label>Extra Price per Tier (₹)</label>
+      <input type="number" step="10" name="extra_tier_price" class="form-control"
+             value="{{ pricing.extra_tier_price or '' }}" required>
+    </div>
+
+    <!-- Frosting -->
+    <h5 class="mt-4">Frosting Prices</h5>
+    <div class="form-group mb-2">
+      <label>Buttercream (₹)</label>
+      <input type="number" step="10" name="frosting_prices[Buttercream]" class="form-control"
+             value="{{ pricing.frosting_prices['Buttercream'] if pricing.frosting_prices and 'Buttercream' in pricing.frosting_prices else 0 }}">
+    </div>
+    <div class="form-group mb-2">
+      <label>Whipped Cream (₹)</label>
+      <input type="number" step="10" name="frosting_prices[Whipped Cream]" class="form-control"
+             value="{{ pricing.frosting_prices['Whipped Cream'] if pricing.frosting_prices and 'Whipped Cream' in pricing.frosting_prices else 0 }}">
+    </div>
+    <div class="form-group mb-2">
+      <label>Fondant (₹)</label>
+      <input type="number" step="10" name="frosting_prices[Fondant]" class="form-control"
+             value="{{ pricing.frosting_prices['Fondant'] if pricing.frosting_prices and 'Fondant' in pricing.frosting_prices else 0 }}">
+    </div>
+
+    <!-- Topper -->
+    <div class="form-group mt-4">
+      <label>Topper Price (₹)</label>
+      <input type="number" step="10" name="topper_price" class="form-control"
+             value="{{ pricing.topper_prices['Any'] if pricing.topper_prices and 'Any' in pricing.topper_prices else 0 }}">
+    </div>
+
+    <button type="submit" class="btn btn-success mt-4">Save Pricing</button>
+  </form>
+</div>
+{% endblock %}

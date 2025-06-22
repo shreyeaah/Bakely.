@@ -20,10 +20,9 @@ class BakerProfile(db.Model):
     description = db.Column(db.Text, nullable=True)
     logo = db.Column(db.String(120), nullable=True)
     banner = db.Column(db.String(120), nullable=True)
-    bio = db.Column(db.Text, nullable=True)
     instagram = db.Column(db.String(150), nullable=True)
     facebook = db.Column(db.String(150), nullable=True)
-    theme_color = db.Column(db.String(20), nullable=True)
+    
 
 class MenuItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,8 +30,9 @@ class MenuItem(db.Model):
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text, nullable=True)
     image_filename = db.Column(db.String(120))  # store image filename
-    baker_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category = db.Column(db.String(50), nullable=True)
 
+    baker_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     baker = db.relationship('User', backref='menu_items')
 
 
@@ -51,7 +51,7 @@ class Order(db.Model):
     # Foreign Keys
     customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     baker_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_item.id'), nullable=False)
+    menu_item_id = db.Column(db.Integer, db.ForeignKey('menu_item.id'), nullable=True)
 
     # Order Details
     quantity = db.Column(db.Integer, nullable=False, default=1)
@@ -59,6 +59,8 @@ class Order(db.Model):
     shape = db.Column(db.String(20), nullable=True)
     tiers = db.Column(db.Integer, nullable=True)
     message = db.Column(db.Text, nullable=True)
+    is_custom = db.Column(db.Boolean, default=False)
+
 
     delivery_mode = db.Column(db.String(20), nullable=False)
     payment_mode = db.Column(db.String(20), nullable=False)
@@ -70,3 +72,19 @@ class Order(db.Model):
     customer = db.relationship('User', foreign_keys=[customer_id], backref='orders')
     baker = db.relationship('User', foreign_keys=[baker_id])
     menu_item = db.relationship('MenuItem', backref='orders')
+
+
+class BakerPricing(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    baker_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
+
+    base_price_per_kg = db.Column(db.Float, nullable=False)
+    extra_tier_price = db.Column(db.Float, nullable=False)
+
+    frosting_prices = db.Column(db.JSON, default={})
+    topper_prices = db.Column(db.JSON, default={})
+    
+
+    baker = db.relationship('User', backref='pricing', uselist=False)
+
+

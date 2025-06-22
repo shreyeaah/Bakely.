@@ -1,10 +1,11 @@
 from flask import render_template, redirect, url_for, abort, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager
-from models import User, BakerProfile, MenuItem, CartItem, Order
-from forms import RegisterForm, LoginForm, ApproveForm, DeclineForm, MenuItemForm, OrderForm, BakerProfileForm
+from models import User, BakerProfile, MenuItem, CartItem, Order, BakerPricing
+from forms import RegisterForm, LoginForm, ApproveForm, DeclineForm, MenuItemForm, OrderForm, BakerProfileForm, BakerPricingForm
 from werkzeug.utils import secure_filename
 import os
+import json
 
 
 @login_manager.user_loader
@@ -166,6 +167,7 @@ def add_menu_item():
             price=form.price.data,
             description=form.description.data,
             image_filename=filename,
+            category=form.category.data,
             baker_id=current_user.id
         )
         db.session.add(item)
@@ -313,7 +315,7 @@ def accept_order(order_id):
     order.status = 'Accepted'
     db.session.commit()
     flash('Order accepted.', 'success')
-    return redirect(url_for('baker_orders'))
+    return redirect( url_for('baker_orders'))
 
 @app.route('/baker/order/<int:order_id>/decline', methods=['POST'])
 @login_required
@@ -328,7 +330,7 @@ def decline_order(order_id):
     order.status = 'Declined'
     db.session.commit()
     flash('Order declined.', 'info')
-    return redirect(url_for('baker_orders'))
+    return redirect( url_for('baker_orders'))
 
 
 @app.route('/my_orders')
@@ -409,3 +411,111 @@ def mark_delivered(order_id):
     db.session.commit()
     flash('Order marked as Delivered.', 'success')
     return redirect(url_for('baker_orders'))
+
+@app.route('/baker/<int:baker_id>/custom-order-form')
+def custom_order_form(baker_id):
+    baker = User.query.get_or_404(baker_id)
+    if baker.role != 'baker' or not baker.is_approved:
+        abort(404)
+
+    cake_types = MenuItem.query.filter_by(baker_id=baker_id, category='cake').all()
+    pricing_model = BakerPricing.query.filter_by(baker_id=baker_id).first()
+
+    # ✅ Convert to dict to make it JSON serializable
+    pricing = {
+        'base_price_per_kg': pricing_model.base_price_per_kg if pricing_model else 0,
+        'extra_tier_price': pricing_model.extra_tier_price if pricing_model else 0,
+        'frosting_prices': pricing_model.frosting_prices if pricing_model else {},
+        'topper_prices': pricing_model.topper_prices if pricing_model else {},
+    }
+
+    return render_template(
+        'custom_order_form.html',
+        baker=baker,
+        cake_types=cake_types,
+        pricing=pricing  # ✅ now safe to use with `| tojson`
+    )
+
+
+
+@app.route('/baker/set-pricing', methods=['GET', 'POST'])
+@login_required
+def set_custom_pricing():
+    if current_user.role != 'baker':
+        abort(403)
+
+    pricing = BakerPricing.query.filter_by(baker_id=current_user.id).first()
+    if not pricing:
+        pricing = BakerPricing(baker_id=current_user.id)
+        db.session.add(pricing)
+
+    if request.method == 'POST':
+        pricing.base_price_per_kg = float(request.form.get('base_price_per_kg', 0))
+        pricing.extra_tier_price = float(request.form.get('extra_tier_price', 0))
+
+        # Individual frosting prices
+        frosting_prices = {
+            'Buttercream': float(request.form.get('frosting_prices[Buttercream]', 0)),
+            'Whipped Cream': float(request.form.get('frosting_prices[Whipped Cream]', 0)),
+            'Fondant': float(request.form.get('frosting_prices[Fondant]', 0))
+        }
+
+        # Topper: one flat price for any
+        topper_prices = {
+            'Any': float(request.form.get('topper_price', 0))
+        }
+
+        pricing.frosting_prices = frosting_prices
+        pricing.topper_prices = topper_prices
+
+        db.session.commit()
+        flash("Custom pricing saved successfully!", "success")
+        return redirect(url_for('baker_dashboard'))
+
+    return render_template('set_custom_pricing.html', pricing=pricing)
+
+@app.route('/baker/<int:baker_id>/get-price', methods=['POST'])
+def get_custom_price(baker_id):
+    baker = User.query.get_or_404(baker_id)
+    if baker.role != 'baker' or not baker.is_approved:
+        abort(404)
+
+    # Get pricing rules set by baker
+    pricing = BakerPricing.query.filter_by(baker_id=baker_id).first()
+    if not pricing:
+        flash("Pricing not set by baker yet.", "warning")
+        return redirect(request.referrer or url_for('view_bakery', baker_id=baker_id))
+
+    # Fetch cake_types for the baker (needed for rendering the template)
+    cake_types = MenuItem.query.filter_by(baker_id=baker_id, category='cake').all()
+
+    # Get user inputs
+    weight = float(request.form.get("weight", 1))
+    cake_type = request.form.get("cake_type")
+    frosting = request.form.get("frosting")
+    tiers = int(request.form.get("tiers", 1))
+    topper = request.form.get("topper")
+
+    # Fetch base price of selected cake type from MenuItem
+    base_item = MenuItem.query.filter_by(baker_id=baker_id, name=cake_type).first()
+    if not base_item:
+        flash("Cake type not found.", "danger")
+        return redirect(request.referrer)
+
+    base_price = base_item.price * weight
+    extra_tier_price = pricing.extra_tier_price * (tiers - 1) if tiers > 1 else 0
+    frosting_price = pricing.frosting_prices.get(frosting, 0)
+    topper_price = 0 if topper == "None" else pricing.topper_prices.get(topper, 0)
+
+    total_price = base_price + extra_tier_price + frosting_price + topper_price
+
+    # You can flash, redirect or render a new template
+    flash(f"Estimated Price: ₹{round(total_price, 2)}", "info")
+    return render_template(
+    "custom_order_form.html",
+    baker=baker,
+    cake_types=cake_types,
+    pricing=pricing,
+    estimated_price=round(total_price, 2)
+)
+
