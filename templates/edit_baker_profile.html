@@ -2,56 +2,58 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<h2>Edit Your Bakery Profile</h2>
+<div class="max-w-2xl mx-auto bg-white p-6 mt-10 rounded-xl shadow-md border border-gray-200">
+  <h2 class="text-2xl font-semibold text-pink-700 mb-6">Edit Your Bakery Profile</h2>
 
-<form method="POST" enctype="multipart/form-data">
-  {{ form.hidden_tag() }}
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {{ form.hidden_tag() }}
 
-  <div>
-    {{ form.bakery_name.label }}<br>
-    {{ form.bakery_name(size=40) }}
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.bakery_name.label }}</label>
+      {{ form.bakery_name(class="w-full border-gray-300 rounded-md shadow-sm") }}
+    </div>
 
-  <div>
-    {{ form.phone.label }}<br>
-    {{ form.phone(size=20) }}
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.phone.label }}</label>
+      {{ form.phone(class="w-full border-gray-300 rounded-md shadow-sm") }}
+    </div>
 
-  <div>
-    {{ form.address.label }}<br>
-    {{ form.address(size=60) }}
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.address.label }}</label>
+      {{ form.address(class="w-full border-gray-300 rounded-md shadow-sm") }}
+    </div>
 
-  <div>
-    {{ form.description.label }}<br>
-    {{ form.description(rows=3, cols=60) }}
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.description.label }}</label>
+      {{ form.description(class="w-full border-gray-300 rounded-md shadow-sm") }}
+    </div>
 
-  
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.logo.label }}</label>
+      {{ form.logo(class="w-full text-sm text-gray-600") }}
+    </div>
 
-  <div>
-    {{ form.logo.label }}<br>
-    {{ form.logo() }}
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.banner.label }}</label>
+      {{ form.banner(class="w-full text-sm text-gray-600") }}
+    </div>
 
-  <div>
-    {{ form.banner.label }}<br>
-    {{ form.banner() }}
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.instagram.label }}</label>
+      {{ form.instagram(class="w-full border-gray-300 rounded-md shadow-sm") }}
+    </div>
 
-  <div>
-    {{ form.instagram.label }}<br>
-    {{ form.instagram(size=60) }}
-  </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ form.facebook.label }}</label>
+      {{ form.facebook(class="w-full border-gray-300 rounded-md shadow-sm") }}
+    </div>
 
-  <div>
-    {{ form.facebook.label }}<br>
-    {{ form.facebook(size=60) }}
-  </div>
-
-  
-
-  <br>
-  <button type="submit">{{ form.submit.label }}</button>
-</form>
+    <div class="pt-4">
+      <button type="submit"
+              class="px-6 py-2 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition">
+        {{ form.submit.label }}
+      </button>
+    </div>
+  </form>
+</div>
 {% endblock %}

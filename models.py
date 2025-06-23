@@ -59,7 +59,14 @@ class Order(db.Model):
     shape = db.Column(db.String(20), nullable=True)
     tiers = db.Column(db.Integer, nullable=True)
     message = db.Column(db.Text, nullable=True)
+
     is_custom = db.Column(db.Boolean, default=False)
+    cake_type = db.Column(db.String(100), nullable=True)
+    frosting = db.Column(db.String(50), nullable=True)
+    topper = db.Column(db.String(50), nullable=True)
+    theme = db.Column(db.String(200), nullable=True)
+    reference_img = db.Column(db.String(120), nullable=True)
+    estimated_price = db.Column(db.Float, nullable=True)
 
 
     delivery_mode = db.Column(db.String(20), nullable=False)

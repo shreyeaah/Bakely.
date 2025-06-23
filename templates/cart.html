@@ -1,21 +1,78 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Your Cart</h2>
-<ul>
-  {% for item in cart_items %}
-    <li>
-      <img src="{{ url_for('static', filename='uploads/' ~ item.menu_item.image_filename) }}" width="150"><br>
-      <strong>{{ item.menu_item.name }}</strong> - ₹{{ item.menu_item.price }} × {{ item.quantity }}<br>
-      <em>Bakery:</em> {{ item.menu_item.baker.baker_profile.bakery_name or item.menu_item.baker.username }}<br>
+<div class="px-6 sm:px-10 py-6 bg-[#fdf6f9] min-h-screen">
+  <h2 class="text-2xl font-bold text-pink-700 mb-6">Your Cart</h2>
 
-      <form action="{{ url_for('place_order_form', cart_item_id=item.id) }}" method="get">
-        <button type="submit">Order Now</button>
-      </form>
-    </li>
-  {% endfor %}
-</ul>
+  <div class="flex flex-col gap-5 max-w-2xl">
+    {% for item in cart_items %}
+    <div class="flex gap-4 bg-white border border-pink-100 rounded-xl shadow p-4">
+      <img src="{{ url_for('static', filename='uploads/' ~ item.menu_item.image_filename) }}"
+           alt="Cake image"
+           class="w-36 h-36 object-cover rounded-lg border border-pink-200" />
 
-<p><strong>Total:</strong> ₹{{ total }}</p>
+      <div class="flex flex-col justify-between flex-grow">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">{{ item.menu_item.name }}</h3>
+          <p class="text-pink-600 text-sm font-medium mb-1">
+            ₹{{ item.menu_item.price }} × {{ item.quantity }} = ₹{{ item.menu_item.price * item.quantity }}
+          </p>
+          <p class="text-sm text-gray-600">
+            <strong>Bakery:</strong> {{ item.menu_item.baker.baker_profile.bakery_name }}
+          </p>
+        </div>
 
+        <div class="flex items-center gap-3 mt-3 flex-wrap">
+          <!-- Decrease quantity -->
+          <form action="{{ url_for('update_cart_quantity', item_id=item.id, action='decrement') }}" method="post">
+            <button type="submit"
+                    class="bg-pink-100 text-pink-700 px-3 py-1 rounded hover:bg-pink-200 transition">−</button>
+          </form>
+
+          <span class="text-sm font-medium px-2">{{ item.quantity }}</span>
+
+          <!-- Increase quantity -->
+          <form action="{{ url_for('update_cart_quantity', item_id=item.id, action='increment') }}" method="post">
+            <button type="submit"
+                    class="bg-pink-100 text-pink-700 px-3 py-1 rounded hover:bg-pink-200 transition">+</button>
+          </form>
+
+          <!-- Remove -->
+          <form action="{{ url_for('remove_from_cart', item_id=item.id) }}" method="post">
+            <button type="submit"
+                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-200 transition text-sm ml-3">
+              Remove
+            </button>
+          </form>
+
+          <!-- Order Now -->
+          <form action="{{ url_for('place_order_form', cart_item_id=item.id) }}" method="get">
+            <button type="submit"
+                    class="bg-yellow-300 text-white text-sm px-3 py-1 rounded hover:bg-pink-600 transition ml-3">
+              Order Now
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if not cart_items %}
+      <p class="text-gray-500 text-center text-lg mt-10">Your cart is empty!</p>
+    {% endif %}
+
+    <!-- Total section -->
+    {% if total %}
+    <div class="text-right mt-6">
+      <p class="text-xl font-semibold text-gray-800">
+        Total: <span class="text-pink-700">₹{{ total }}</span>
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<a href="{{ url_for('customer_dashboard') }}"
+   class="inline-block ml-10 mb-4 px-4 py-2 bg-pink-100 text-pink-700 rounded hover:bg-pink-200 font-semibold transition">
+  ← Back to Dashboard
+</a>
 
 {% endblock %}

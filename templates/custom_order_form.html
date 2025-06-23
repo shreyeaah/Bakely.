@@ -1,130 +1,155 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-5">
-  <h2>Place a Custom Order with {{ baker.baker_profile.bakery_name }}</h2>
+<div class="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
 
-  <!-- Weight -->
-  <div class="form-group mb-3">
-    <label>Weight (in kg)</label>
-    <input type="number" id="weight" name="weight" step="0.5" class="form-control" required>
-  </div>
+  <h2 class="text-2xl font-bold text-pink-600 text-center mb-6">
+    Place a Custom Order with {{ baker.baker_profile.bakery_name }}
+  </h2>
 
-  <!-- Cake Type -->
-  <div class="form-group mb-3">
-    <label>Cake Type</label>
-    <select name="cake_type" class="form-control" required id="cake_type">
-      {% for item in cake_types %}
-      <option value="{{ item.name }}" data-price="{{ item.price }}">{{ item.name }}</option>
-      {% endfor %}
-    </select>
+  <form method="POST" action="{{ url_for('place_custom_order', baker_id=baker.id) }}"
+        enctype="multipart/form-data" id="customOrderForm"
+        class="space-y-5">
 
+    <!-- Weight -->
+    <div>
+      <label class="block font-semibold text-gray-700">Weight (in kg)</label>
+      <input type="number" id="weight" name="weight" step="0.5"
+             class="w-full border border-gray-300 rounded px-3 py-2" required>
+    </div>
 
-  </div>
+    <!-- Cake Type -->
+    <div>
+      <label class="block font-semibold text-gray-700">Cake Type</label>
+      <select name="cake_type" id="cake_type"
+              class="w-full border border-gray-300 rounded px-3 py-2" required>
+        {% for item in cake_types %}
+        <option value="{{ item.name }}" data-price="{{ item.price }}">{{ item.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
-  <!-- Frosting -->
-  <div class="form-group mb-3">
-    <label>Frosting</label>
-    <select id="frosting" name="frosting" class="form-control" required>
-      <option value="Buttercream">Buttercream</option>
-      <option value="Fondant">Fondant</option>
-      <option value="Whipped Cream">Whipped Cream</option>
-    </select>
-  </div>
+    <!-- Frosting -->
+    <div>
+      <label class="block font-semibold text-gray-700">Frosting</label>
+      <select id="frosting" name="frosting"
+              class="w-full border border-gray-300 rounded px-3 py-2" required>
+        <option value="Buttercream">Buttercream</option>
+        <option value="Fondant">Fondant</option>
+        <option value="Whipped Cream">Whipped Cream</option>
+      </select>
+    </div>
 
-  <!-- Tiers -->
-  <div class="form-group mb-3">
-    <label>Number of Tiers</label>
-    <input type="number" id="tiers" name="tiers" class="form-control" min="1" required>
-  </div>
+    <!-- Tiers -->
+    <div>
+      <label class="block font-semibold text-gray-700">Number of Tiers</label>
+      <input type="number" id="tiers" name="tiers" min="1"
+             class="w-full border border-gray-300 rounded px-3 py-2" required>
+    </div>
 
-  <!-- Theme -->
-  <div class="form-group mb-3">
-    <label>Theme</label>
-    <input type="text" name="theme" class="form-control">
-  </div>
+    <!-- Theme -->
+    <div>
+      <label class="block font-semibold text-gray-700">Theme</label>
+      <input type="text" name="theme"
+             class="w-full border border-gray-300 rounded px-3 py-2">
+    </div>
 
-  <!-- Message -->
-  <div class="form-group mb-3">
-    <label>Message on Cake</label>
-    <input type="text" name="message" class="form-control">
-  </div>
+    <!-- Message -->
+    <div>
+      <label class="block font-semibold text-gray-700">Message on Cake</label>
+      <input type="text" name="message"
+             class="w-full border border-gray-300 rounded px-3 py-2">
+    </div>
 
-  <!-- Topper -->
-  <div class="form-group mb-3">
-    <label>Topper</label>
-    <select id="topper" name="topper" class="form-control">
-      <option value="None">None</option>
-      <option value="Happy Birthday">Happy Birthday</option>
-      <option value="Bride & Groom">Bride & Groom</option>
-      <option value="Custom">Custom</option>
-    </select>
-  </div>
+    <!-- Topper -->
+    <div>
+      <label class="block font-semibold text-gray-700">Topper</label>
+      <select id="topper" name="topper"
+              class="w-full border border-gray-300 rounded px-3 py-2">
+        <option value="None">None</option>
+        <option value="Happy Birthday">Happy Birthday</option>
+        <option value="Bride & Groom">Bride & Groom</option>
+        <option value="Custom">Custom</option>
+      </select>
+    </div>
 
-  <!-- Reference Image -->
-  <div class="form-group mb-3">
-    <label>Reference Image</label>
-    <input type="file" name="reference_img" class="form-control">
-  </div>
+    <!-- Reference Image -->
+    <div>
+      <label class="block font-semibold text-gray-700">Reference Image</label>
+      <input type="file" name="reference_img"
+             class="w-full border border-gray-300 rounded px-3 py-2">
+    </div>
 
-  <!-- Price display -->
-  <p id="priceDisplay" class="mt-3 fw-bold"></p>
+    <!-- Delivery Mode -->
+    <div>
+      <label class="block font-semibold text-gray-700">Delivery Mode</label>
+      <select name="delivery_mode"
+              class="w-full border border-gray-300 rounded px-3 py-2" required>
+        <option value="Pickup">Pickup</option>
+        <option value="Home Delivery">Home Delivery</option>
+      </select>
+    </div>
 
-  <!-- Button to calculate price -->
-  <button type="button" onclick="calculatePrice()" class="btn btn-success">Get Price</button>
+    <!-- Payment Mode -->
+    <div>
+      <label class="block font-semibold text-gray-700">Payment Mode</label>
+      <select name="payment_mode"
+              class="w-full border border-gray-300 rounded px-3 py-2" required>
+        <option value="Cash on Delivery">Cash on Delivery</option>
+        <option value="UPI">UPI</option>
+        <option value="Card">Card</option>
+      </select>
+    </div>
+
+    <!-- Estimated Price -->
+    <input type="hidden" name="estimated_price" id="estimated_price">
+
+    <p id="priceDisplay" class="text-lg font-semibold text-gray-800 mt-2"></p>
+
+    <!-- Buttons -->
+    <div class="flex flex-col sm:flex-row sm:gap-4 mt-4">
+      <button type="button" onclick="calculatePrice()"
+              class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-lg shadow">
+        Get Price
+      </button>
+      <button type="submit" id="orderNowBtn"
+              class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow mt-3 sm:mt-0 d-none">
+        Order Now
+      </button>
+    </div>
+  </form>
 </div>
 
-<!-- Embed pricing as JSON safely -->
 <script type="application/json" id="pricing-json">
   {{ pricing | tojson | safe }}
 </script>
 
-<!-- Parse it into JavaScript -->
 <script>
   const pricingData = JSON.parse(document.getElementById('pricing-json').textContent);
 
   function calculatePrice() {
-    const cakeSelect = document.querySelector('select[name="cake_type"]');
+    const cakeSelect = document.getElementById('cake_type');
     const baseCakePrice = parseFloat(
       cakeSelect.options[cakeSelect.selectedIndex].getAttribute('data-price')
     );
 
-    const weight = parseFloat(document.querySelector('input[name="weight"]').value) || 1;
-    const tiers = parseInt(document.querySelector('input[name="tiers"]').value) || 1;
-    const frosting = document.querySelector('select[name="frosting"]').value;
-    const topper = document.querySelector('select[name="topper"]').value;
+    const weight = parseFloat(document.getElementById('weight').value) || 1;
+    const tiers = parseInt(document.getElementById('tiers').value) || 1;
+    const frosting = document.getElementById('frosting').value;
+    const topper = document.getElementById('topper').value;
 
     let total = baseCakePrice;
 
-    // ➕ Add extra price for weight over 1kg
-    if (weight > 1) {
-      total += pricingData.base_price_per_kg * (weight - 1);
-    }
-
-    // ➕ Add extra for additional tiers beyond 1
-    if (tiers > 1) {
-      total += pricingData.extra_tier_price * (tiers - 1);
-    }
-
-    // ➕ Add frosting price if set
-    if (frosting && pricingData.frosting_prices[frosting]) {
+    if (weight > 1) total += pricingData.base_price_per_kg * (weight - 1);
+    if (tiers > 1) total += pricingData.extra_tier_price * (tiers - 1);
+    if (frosting && pricingData.frosting_prices[frosting])
       total += pricingData.frosting_prices[frosting];
-    }
-
-    // ➕ Add topper price if selected (any non-"None")
-    if (topper !== 'None' && pricingData.topper_prices['Any']) {
+    if (topper !== 'None' && pricingData.topper_prices['Any'])
       total += pricingData.topper_prices['Any'];
-    }
 
-    document.getElementById('priceDisplay').innerText = `Estimated Price: ₹${total.toFixed(2)}`;
-    
-    console.log("Base Cake Price:", baseCakePrice);
-    console.log("Weight:", weight);
-    console.log("Tiers:", tiers);
-    console.log("Frosting:", frosting);
-    console.log("Topper:", topper);
-
+    const finalPrice = total.toFixed(2);
+    document.getElementById('priceDisplay').innerText = `Estimated Price: ₹${finalPrice}`;
+    document.getElementById('estimated_price').value = finalPrice;
+    document.getElementById('orderNowBtn').classList.remove('d-none');
   }
 </script>
-
-
 {% endblock %}

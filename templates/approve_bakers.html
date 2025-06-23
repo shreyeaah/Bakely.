@@ -2,35 +2,48 @@
 {% block title %}Approve Bakers{% endblock %}
 
 {% block content %}
-<h1>Pending Baker Approvals</h1>
+<div class="px-6 sm:px-10 py-8 bg-[#f9f8fb] min-h-screen">
+  <h1 class="text-2xl font-bold text-pink-700 mb-6">Pending Baker Approvals</h1>
 
-{% if bakers %}
-<ul>
-  {% for baker in bakers %}
-  <li>
-    <strong>{{ baker.username }}</strong>
-    <strong>Bakery Name:</strong> {{ baker.baker_profile.bakery_name if baker.baker_profile else 'N/A' }}<br>
-    <strong>Phone:</strong> {{ baker.baker_profile.phone if baker.baker_profile else 'N/A' }}<br>
-    <strong>Address:</strong> {{ baker.baker_profile.address if baker.baker_profile else 'N/A' }}<br>
-    <strong>Description:</strong> {{ baker.baker_profile.description if baker.baker_profile else 'N/A' }}<br>
+  {% if bakers %}
+  <div class="grid gap-6 max-w-4xl">
+    {% for baker in bakers %}
+    <div class="bg-white border border-pink-100 rounded-xl shadow-md p-5">
+      <h2 class="text-lg font-semibold text-gray-800">{{ baker.username }}</h2>
+      <p class="text-sm text-gray-600"><strong>Bakery Name:</strong> {{ baker.baker_profile.bakery_name if baker.baker_profile else 'N/A' }}</p>
+      <p class="text-sm text-gray-600"><strong>Phone:</strong> {{ baker.baker_profile.phone if baker.baker_profile else 'N/A' }}</p>
+      <p class="text-sm text-gray-600"><strong>Address:</strong> {{ baker.baker_profile.address if baker.baker_profile else 'N/A' }}</p>
+      <p class="text-sm text-gray-600 mb-4"><strong>Description:</strong> {{ baker.baker_profile.description if baker.baker_profile else 'N/A' }}</p>
 
+      <div class="flex gap-4">
+        <form method="POST" action="{{ url_for('approve_baker', user_id=baker.id) }}">
+          {{ approve_form.hidden_tag() }}
+          <button type="submit"
+                  class="bg-green-100 text-green-700 px-4 py-2 rounded hover:bg-green-200 transition">
+            Approve
+          </button>
+        </form>
 
-    <form method="POST" action="{{ url_for('approve_baker', user_id=baker.id) }}" style="display:inline;">
-      {{ approve_form.hidden_tag() }}
-      {{ approve_form.submit() }}
-    </form>
+        <form method="POST" action="{{ url_for('decline_baker', user_id=baker.id) }}">
+          {{ decline_form.hidden_tag() }}
+          <button type="submit"
+                  class="bg-red-100 text-red-600 px-4 py-2 rounded hover:bg-red-200 transition">
+            Decline
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-gray-600 text-lg">No pending baker approvals.</p>
+  {% endif %}
 
-    <form method="POST" action="{{ url_for('decline_baker', user_id=baker.id) }}" style="display:inline;">
-      {{ decline_form.hidden_tag() }}
-      {{ decline_form.submit(value='Decline') }}
-    </form>
-  </li>
-  {% endfor %}
-</ul>
-{% else %}
-<p>No pending baker approvals.</p>
-{% endif %}
-
-<br>
-<a href="{{ url_for('index') }}">Back to index</a>
+  <div class="mt-8">
+    <a href="{{ url_for('index') }}"
+       class="inline-block text-pink-600 hover:text-pink-800 underline text-sm">
+      ← Back to Home
+    </a>
+  </div>
+</div>
 {% endblock %}

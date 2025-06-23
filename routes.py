@@ -182,16 +182,18 @@ def add_menu_item():
 def edit_menu_item(item_id):
     item = MenuItem.query.get_or_404(item_id)
 
-    # ✅ Ensure the item belongs to the current baker
     if item.baker_id != current_user.id:
         abort(403)
 
     form = MenuItemForm(obj=item)
 
     if form.validate_on_submit():
+        print("✅ Form validated")
+
         item.name = form.name.data
         item.price = form.price.data
         item.description = form.description.data
+        item.category = form.category.data
 
         if form.image.data:
             filename = secure_filename(form.image.data.filename)
@@ -202,8 +204,15 @@ def edit_menu_item(item_id):
         db.session.commit()
         flash('Item updated!', 'success')
         return redirect(url_for('baker_dashboard'))
+    
+    # 👇 Add these lines to debug
+    print("Form not validated")
+    print("Form submitted:", form.is_submitted())
+    print("Form errors:", form.errors)
 
     return render_template('edit_menu_item.html', form=form, item=item)
+
+
 
 @app.route('/baker/delete_item/<int:item_id>', methods=['POST', 'GET'])
 @login_required
@@ -358,17 +367,16 @@ def edit_baker_profile():
         profile.description = form.description.data
         profile.instagram = form.instagram.data
         profile.facebook = form.facebook.data
-        
 
         # Upload logo
-        if form.logo.data:
+        if form.logo.data and hasattr(form.logo.data, 'filename'):
             logo_filename = secure_filename(form.logo.data.filename)
             logo_path = os.path.join(app.root_path, 'static/uploads', logo_filename)
             form.logo.data.save(logo_path)
             profile.logo = logo_filename
 
         # Upload banner
-        if form.banner.data:
+        if form.banner.data and hasattr(form.banner.data, 'filename'):
             banner_filename = secure_filename(form.banner.data.filename)
             banner_path = os.path.join(app.root_path, 'static/uploads', banner_filename)
             form.banner.data.save(banner_path)
@@ -379,7 +387,6 @@ def edit_baker_profile():
         return redirect(url_for('baker_dashboard'))
 
     return render_template('edit_baker_profile.html', form=form)
-
 
 @app.route('/baker/order/<int:order_id>/ready', methods=['POST'])
 @login_required
@@ -519,3 +526,82 @@ def get_custom_price(baker_id):
     estimated_price=round(total_price, 2)
 )
 
+@app.route('/baker/<int:baker_id>/place-custom-order', methods=['POST'])
+@login_required
+def place_custom_order(baker_id):
+    if current_user.role != 'customer':
+        abort(403)
+
+    baker = User.query.get_or_404(baker_id)
+    if baker.role != 'baker' or not baker.is_approved:
+        abort(404)
+
+    weight = float(request.form.get("weight", 1))
+    cake_type = request.form.get("cake_type")
+    frosting = request.form.get("frosting")
+    tiers = int(request.form.get("tiers", 1))
+    theme = request.form.get("theme")
+    message = request.form.get("message")
+    topper = request.form.get("topper")
+    delivery_mode = request.form.get("delivery_mode")
+    payment_mode = request.form.get("payment_mode")
+    estimated_price = float(request.form.get("estimated_price", 0))
+
+    reference_img = request.files.get("reference_img")
+    filename = None
+    if reference_img:
+        filename = secure_filename(reference_img.filename)
+        image_path = os.path.join(app.root_path, 'static/uploads', filename)
+        reference_img.save(image_path)
+
+    order = Order(
+        customer_id=current_user.id,
+        baker_id=baker_id,
+        is_custom=True,
+        weight=weight,
+        tiers=tiers,
+        cake_type=cake_type,
+        frosting=frosting,
+        topper=topper,
+        theme=theme,
+        message=message,
+        reference_img=filename,
+        estimated_price=estimated_price,
+        delivery_mode=delivery_mode,
+        payment_mode=payment_mode,
+        status="Pending"
+    )
+
+    db.session.add(order)
+    db.session.commit()
+
+    flash("Custom order placed successfully!", "success")
+    return redirect(url_for('my_orders'))
+
+
+@app.route('/cart/update_quantity/<int:item_id>/<action>', methods=['POST'])
+@login_required
+def update_cart_quantity(item_id, action):
+    item = CartItem.query.get_or_404(item_id)
+    if item.user_id != current_user.id:
+        abort(403)
+
+    if action == 'increment':
+        item.quantity += 1
+    elif action == 'decrement' and item.quantity > 1:
+        item.quantity -= 1
+
+    db.session.commit()
+    return redirect(url_for('view_cart'))  # or your cart route
+
+@app.route('/cart/remove/<int:item_id>', methods=['POST'])
+@login_required
+def remove_from_cart(item_id):
+    item = CartItem.query.get_or_404(item_id)
+    if item.user_id != current_user.id:
+        abort(403)
+
+    db.session.delete(item)
+    db.session.commit()
+    flash("Item removed from cart", "info")
+    return redirect(url_for('view_cart'))

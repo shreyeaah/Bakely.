@@ -2,42 +2,72 @@
 {% block title %}Baker Orders{% endblock %}
 
 {% block content %}
-  <h2>Incoming Orders</h2>
+<div class="max-w-4xl mx-auto mt-10 px-4">
+  <h2 class="text-3xl font-semibold text-pink-600 mb-6">Orders</h2>
 
   {% if orders %}
-    <ul>
-    {% for order in orders %}
-      <li>
-        <strong>Item:</strong> {{ order.menu_item.name }}<br>
-        <strong>Customer:</strong> {{ order.customer.username }}<br>
-        <strong>Quantity:</strong> {{ order.quantity }}<br>
-        <strong>Status:</strong> {{ order.status }}<br>
+    <div class="grid gap-6">
+      {% for order in orders %}
+        <div class="bg-white shadow-lg rounded-xl p-5 border border-gray-200">
+          <div class="mb-3">
+            <p class="text-lg font-semibold text-gray-800">
+              {% if order.is_custom %}
+                Custom Cake – {{ order.cake_type or "Cake" }}
+              {% else %}
+                {{ order.menu_item.name }}
+              {% endif %}
+            </p>
+            <p class="text-sm text-gray-500">Ordered by: <strong>{{ order.customer.username }}</strong></p>
+          </div>
 
-        {% if order.status == 'Pending' %}
-          <form action="{{ url_for('accept_order', order_id=order.id) }}" method="post" style="display:inline;">
-            <button type="submit">Accept</button>
-          </form>
+          <div class="text-sm text-gray-700 space-y-1">
+            {% if order.quantity %}<p><strong>Quantity:</strong> {{ order.quantity }}</p>{% endif %}
+            {% if order.price %}<p><strong>Price:</strong> ₹{{ order.price }}</p>{% endif %}
+            {% if order.weight %}<p><strong>Weight:</strong> {{ order.weight }} kg</p>{% endif %}
+            {% if order.tiers %}<p><strong>Tiers:</strong> {{ order.tiers }}</p>{% endif %}
+            {% if order.frosting %}<p><strong>Frosting:</strong> {{ order.frosting }}</p>{% endif %}
+            {% if order.topper %}<p><strong>Topper:</strong> {{ order.topper }}</p>{% endif %}
+            {% if order.theme %}<p><strong>Theme:</strong> {{ order.theme }}</p>{% endif %}
+            {% if order.message %}<p><strong>Message:</strong> {{ order.message }}</p>{% endif %}
+            <p><strong>Delivery Mode:</strong> {{ order.delivery_mode }}</p>
+            <p><strong>Payment Mode:</strong> {{ order.payment_mode }}</p>
+            <p><strong>Status:</strong> 
+              <span class="inline-block px-2 py-1 rounded-full bg-gray-200 text-gray-800 text-xs">{{ order.status }}</span>
+            </p>
+          </div>
 
-          <form action="{{ url_for('decline_order', order_id=order.id) }}" method="post" style="display:inline;">
-            <button type="submit">Decline</button>
-          </form>
-        
-        {% elif order.status == 'Accepted' %}
-          <form action="{{ url_for('mark_ready', order_id=order.id) }}" method="post" style="display:inline;">
-            <button type="submit">Mark as Ready</button>
-          </form>
-        
-        {% elif order.status == 'Ready' %}
-          <form action="{{ url_for('mark_delivered', order_id=order.id) }}" method="post" style="display:inline;">
-            <button type="submit">Mark as Delivered</button>
-          </form>
-        {% endif %}
-
-        <hr>
-      </li>
-    {% endfor %}
-    </ul>
+          <!-- 🔘 Action Buttons -->
+          <div class="mt-4 flex flex-wrap gap-2">
+            {% if order.status == 'Pending' %}
+              <form action="{{ url_for('accept_order', order_id=order.id) }}" method="post">
+                <button type="submit" class="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 transition">Accept</button>
+              </form>
+              <form action="{{ url_for('decline_order', order_id=order.id) }}" method="post">
+                <button type="submit" class="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition">Decline</button>
+              </form>
+            {% elif order.status == 'Accepted' %}
+              <form action="{{ url_for('mark_ready', order_id=order.id) }}" method="post">
+                <button type="submit" class="bg-yellow-500 text-white px-4 py-1 rounded hover:bg-yellow-600 transition">Mark as Ready</button>
+              </form>
+            {% elif order.status == 'Ready' %}
+              <form action="{{ url_for('mark_delivered', order_id=order.id) }}" method="post">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition">Mark as Delivered</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
   {% else %}
-    <p>No orders yet.</p>
+    <p class="text-gray-600">You haven't received any orders yet.</p>
   {% endif %}
+</div>
+<div class="text-center mt-8 mb-10">
+  <a href="{{ url_for('baker_dashboard') }}"
+     class="inline-block text-sm px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
+    ← Back to Dashboard
+  </a>
+</div>
+
+
 {% endblock %}

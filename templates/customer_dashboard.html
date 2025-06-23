@@ -2,32 +2,66 @@
 {% block title %}Customer Dashboard{% endblock %}
 
 {% block content %}
-<h1>Welcome, {{ current_user.username }} (Customer)</h1>
-<p>This is your customer dashboard.</p>
+<div class="min-h-screen bg-pink-50 px-6 py-8 font-sans text-gray-800">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+  <h1 class="text-3xl font-extrabold text-pink-600 tracking-tight">Bakely.</h1>
 
-<form method="get">
-  <input type="text" name="place" placeholder="Search by location..." value="{{ place }}">
-  <button type="submit">Search</button>
-</form>
+  <div class="flex gap-3 text-sm">
+    <a href="{{ url_for('view_cart') }}"
+       class="flex items-center gap-2 bg-pink-200 text-pink-700 font-medium px-4 py-2 rounded-lg shadow-sm hover:bg-pink-300 transition">
+      View Cart
+    </a>
 
-<h3>Available Bakeries</h3>
-<ul>
-  {% if bakers %}
-    {% for baker in bakers %}
-      <li>
-        <a href="{{ url_for('view_bakery', baker_id=baker.id) }}">
-          {{ baker.baker_profile.bakery_name or baker.username }}
-        </a>
-     </li>
-    {% endfor %}
-  {% else %}
-    <li>No bakeries found for "{{ place }}".</li>
-  {% endif %}
-</ul>
-<a href="{{ url_for('view_cart') }}">
-  <button>🛒 View Cart</button>
-</a>
-<a href="{{ url_for('my_orders') }}">View My Orders</a>
+    <a href="{{ url_for('my_orders') }}"
+       class="bg-yellow-200 text-yellow-700 font-medium px-4 py-2 rounded-lg shadow-sm hover:bg-yellow-300 transition">
+      My Orders
+    </a>
 
-<a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('logout') }}"
+       class="bg-red-200 text-red-700 font-medium px-4 py-2 rounded-lg shadow-sm hover:bg-red-300 transition">
+      Logout
+    </a>
+  </div>
+</div>
+
+
+  <!-- Welcome Message -->
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold">Welcome, {{ current_user.username }} </h2>
+    <p class="text-sm text-gray-600">This is your customer dashboard.</p>
+  </div>
+
+  <!-- Search Form -->
+  <form method="get" class="mb-8 flex gap-2">
+    <input type="text" name="place" placeholder="Search by location..." value="{{ place }}"
+      class="flex-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-300">
+    <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600">
+      Search
+    </button>
+  </form>
+
+  <!-- Available Bakeries Slider -->
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-lg font-semibold mb-4 text-pink-700">Available Bakeries</h3>
+    {% if bakers %}
+    <div class="overflow-x-auto whitespace-nowrap space-x-4 flex pb-4">
+      {% for baker in bakers %}
+      <div class="inline-block bg-pink-100 rounded-lg shadow-md w-64 p-4 hover:bg-pink-200 transition">
+        {% if baker.baker_profile.logo %}
+        <img src="{{ url_for('static', filename='uploads/' + baker.baker_profile.logo) }}" alt="Bakery Logo"
+          class="w-full h-40 object-cover rounded-md border border-gray-200">
+        {% endif %}
+
+        <h4 class="text-lg font-semibold text-pink-800">{{ baker.baker_profile.bakery_name or baker.username }}</h4>
+        <a href="{{ url_for('view_bakery', baker_id=baker.id) }}"
+          class="text-sm text-pink-600 underline mt-1 inline-block">View Bakery</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-500">No bakeries found for "{{ place }}".</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

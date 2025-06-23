@@ -2,64 +2,86 @@
 {% block title %}{{ baker.baker_profile.bakery_name }}{% endblock %}
 
 {% block content %}
-<div class="bakery-profile" style="text-align: center; padding: 1rem;">
-
+<div class="text-center">
   {% if baker.baker_profile.banner %}
-    <img src="{{ url_for('static', filename='uploads/' + baker.baker_profile.banner) }}" 
-         alt="Banner" style="width: 100%; max-height: 300px; object-fit: cover;">
+    <div class="relative">
+      <img src="{{ url_for('static', filename='uploads/' + baker.baker_profile.banner) }}" 
+           alt="Banner" class="w-full max-h-80 object-cover rounded-lg">
+      {% if baker.baker_profile.logo %}
+        <img src="{{ url_for('static', filename='uploads/' + baker.baker_profile.logo) }}"
+             alt="Logo" class="w-32 h-32 object-cover rounded-full border-4 border-white shadow-lg absolute left-1/2 transform -translate-x-1/2 -bottom-8">
+      {% endif %}
+    </div>
   {% endif %}
+  <div class="mt-16 mb-6">
+    <h2 class="text-3xl font-bold font-serif text-gray-900 mt-4">{{ baker.baker_profile.bakery_name or baker.username }}</h2>
+    <p class="text-gray-600 mt-1">
+      <strong>Phone:</strong> {{ baker.baker_profile.phone }} |
+      <strong>Address:</strong> {{ baker.baker_profile.address }}
+    </p>
+    <p class="text-gray-600"><strong>About Us:</strong> {{ baker.baker_profile.description }}</p>
 
-  {% if baker.baker_profile.logo %}
-    <img src="{{ url_for('static', filename='uploads/' + baker.baker_profile.logo) }}"
-         alt="Logo" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid #ccc; margin-top: -60px; background: white;">
-  {% endif %}
-
-  <h2>{{ baker.baker_profile.bakery_name or baker.username }}</h2>
-
-  <p><strong>Phone:</strong> {{ baker.baker_profile.phone }}</p>
-  <p><strong>Address:</strong> {{ baker.baker_profile.address }}</p>
-  <p><strong>About Us:</strong> {{ baker.baker_profile.description }}</p>
-
-  
-
-  <div style="margin-top: 10px;">
-    {% if baker.baker_profile.instagram %}
-      <a href="{{ baker.baker_profile.instagram }}" target="_blank">📸 Instagram</a>
-    {% endif %}
-    {% if baker.baker_profile.facebook %}
-      &nbsp;|&nbsp;
-      <a href="{{ baker.baker_profile.facebook }}" target="_blank">📘 Facebook</a>
-    {% endif %}
+    <div class="mt-2 text-pink-600 flex justify-center items-center gap-4">
+      {% if baker.baker_profile.instagram %}
+        <a href="{{ baker.baker_profile.instagram }}" target="_blank" class="flex items-center gap-1">
+          <i class="fab fa-instagram"></i> Instagram
+        </a>
+      {% endif %}
+      {% if baker.baker_profile.facebook %}
+        <a href="{{ baker.baker_profile.facebook }}" target="_blank" class="flex items-center gap-1">
+          <i class="fab fa-facebook"></i> Facebook
+        </a>
+      {% endif %}
+    </div>
   </div>
 </div>
 
+<!-- Custom Order Section -->
+<div class="bg-pink-50 mt-10 px-8 py-10 rounded-lg shadow-md">
+  <div class="flex flex-col-reverse md:flex-row items-center justify-center gap-10">
+    <div class="text-center md:text-left">
+      <h3 class="text-2xl font-bold text-pink-700 mb-2">Customize Your Cake, Your Way!</h3>
+      <p class="text-gray-700 mb-4 max-w-md">
+        Design your dream cake from flavors and tiers to toppers and themes.<br>
+        Celebrate your special moments with a creation that's truly yours!
+      </p>
+      <a href="{{ url_for('custom_order_form', baker_id=baker.id) }}"
+        class="inline-block mt-2 px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg shadow">
+        Place Custom Order
+      </a>
+    </div>
+    <img src="{{ url_for('static', filename='uploads/custom.jpeg') }}" alt="Custom Cake"
+      class="w-48 h-48 object-cover rounded shadow-md">
+  </div>
+</div>
 
-<hr>
-
-<h3 style="text-align: center;">Menu</h3>
-<div class="menu-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+<!-- Menu Section -->
+<h3 class="text-2xl font-bold text-center mt-12 mb-6">Menu</h3>
+<div class="flex flex-wrap justify-center gap-6">
   {% for item in menu_items %}
-    <div class="menu-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; width: 200px;">
-      
+    <div class="bg-white shadow-md rounded-lg overflow-hidden w-64">
       <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}"
-       width="200"
-       height="150"
-       style="object-fit: cover; border-radius: 6px;">
-
-      <h4>{{ item.name }}</h4>
-      <p><strong>₹{{ item.price }}</strong></p>
-      <p>{{ item.description }}</p>
-      <form method="POST" action="{{ url_for('add_to_cart', item_id=item.id) }}">
-        <button type="submit">Add to Cart</button>
-      </form>
-      
+           alt="{{ item.name }}" class="w-full h-40 object-cover">
+      <div class="p-4 text-center">
+        <h4 class="text-lg font-semibold text-gray-800">{{ item.name }}</h4>
+        <p class="text-pink-600 font-bold">₹{{ item.price }}</p>
+        <p class="text-gray-500 text-sm">{{ item.description }}</p>
+        <form method="POST" action="{{ url_for('add_to_cart', item_id=item.id) }}">
+          <button type="submit"
+            class="mt-3 w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-lg shadow">
+            Add to Cart
+          </button>
+        </form>
+      </div>
     </div>
   {% endfor %}
 </div>
 
-<a href="{{ url_for('custom_order_form', baker_id=baker.id) }}" class="btn btn-primary mt-3">
-    Place Custom Order
-</a>
-
-
+<!-- Back to Dashboard -->
+<div class="text-center mt-16 mb-6">
+  <a href="{{ url_for('customer_dashboard') }}"
+    class="inline-block px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow">
+    ← Go Back to Dashboard
+  </a>
+</div>
 {% endblock %}

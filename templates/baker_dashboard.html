@@ -2,27 +2,48 @@
 {% block title %}Baker Dashboard{% endblock %}
 
 {% block content %}
-  <h1>Welcome, {{ current_user.username }} (Baker)</h1>
-  <p>This is your baker dashboard.</p>
-  <a href="{{ url_for('add_menu_item') }}">➕ Add New Item</a>
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold text-pink-700">Bakely</h1>
+    
 
-{% if items %}
-  <ul>
+
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-wrap gap-4 mb-6">
+    <a href="{{ url_for('add_menu_item') }}"
+      class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition">Add New Item</a>
+    <a href="{{ url_for('baker_orders') }}"
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">View My Orders</a>
+    <a href="{{ url_for('edit_baker_profile') }}"
+      class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition">Edit Profile</a>
+    <a href="{{ url_for('set_custom_pricing') }}"
+      class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">Custom Pricing</a>
+    <a href="{{ url_for('logout') }}" class="ml-auto text-red-500 hover:underline">Logout</a>
+  </div>
+
+  <!-- Menu Items -->
+  {% if items %}
+  <div class="space-y-4">
     {% for item in items %}
-      <li>
-        <strong>{{ item.name }}</strong> – ₹{{ item.price }}<br>
-        <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" height="100"><br>
-        <a href="{{ url_for('edit_menu_item', item_id=item.id) }}">✏️ Edit</a> |
-        <a href="{{ url_for('delete_menu_item', item_id=item.id) }}">❌ Delete</a>
-      </li>
+    <div class="flex items-center bg-white shadow-sm border rounded-xl p-3 hover:shadow-md transition">
+      <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.name }}"
+        class="w-24 h-24 object-cover rounded-md mr-4">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-gray-800">{{ item.name }}</h3>
+        <p class="text-pink-600 font-medium">₹{{ item.price }}</p>
+      </div>
+      <div class="flex gap-3">
+        <a href="{{ url_for('edit_menu_item', item_id=item.id) }}" class="text-blue-600 hover:underline">Edit</a>
+        <a href="{{ url_for('delete_menu_item', item_id=item.id) }}" class="text-red-600 hover:underline">Delete</a>
+      </div>
+    </div>
     {% endfor %}
-  </ul>
-{% else %}
-  <p>No items yet. Add your first menu item!</p>
-{% endif %}
-  <a href="{{ url_for('baker_orders') }}">View My Orders</a>
-  <a href="{{ url_for('logout') }}">Logout</a>
-  <a href="{{ url_for('edit_baker_profile') }}">✏️ Edit Bakery Profile</a>
-  <a href="{{ url_for('set_custom_pricing') }}" class="btn btn-warning mt-3">Set Custom Order Pricing</a>
-
+  </div>
+  {% else %}
+  <p class="text-center text-gray-600 mt-10">No items yet. Add your first menu item!</p>
+  {% endif %}
+</div>
 {% endblock %}

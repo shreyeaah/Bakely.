@@ -1,15 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Order for {{ item.name }}</h2>
+<div class="max-w-lg mx-auto px-4 py-8">
+  <h2 class="text-2xl font-bold text-pink-700 mb-6">Order for {{ item.name }}</h2>
 
-<form method="POST" enctype="multipart/form-data">
-  {{ form.hidden_tag() }}
-  {{ form.weight.label }} {{ form.weight() }}<br>
-  {{ form.shape.label }} {{ form.shape() }}<br>
-  {{ form.tiers.label }} {{ form.tiers() }}<br>
-  {{ form.message.label }} {{ form.message() }}<br>
-  {{ form.delivery_mode.label }} {{ form.delivery_mode() }}<br>
-  {{ form.payment_mode.label }} {{ form.payment_mode() }}<br>
-  {{ form.submit() }}
-</form>
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {{ form.hidden_tag() }}
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.weight.label }}</label>
+      {{ form.weight(class="w-full rounded-lg border border-gray-300 px-3 py-2") }}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.shape.label }}</label>
+      {{ form.shape(class="w-full rounded-lg border border-gray-300 px-3 py-2") }}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.tiers.label }}</label>
+      {{ form.tiers(class="w-full rounded-lg border border-gray-300 px-3 py-2") }}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.message.label }}</label>
+      {{ form.message(class="w-full rounded-lg border border-gray-300 px-3 py-2") }}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.delivery_mode.label }}</label>
+      {{ form.delivery_mode(class="w-full rounded-lg border border-gray-300 px-3 py-2") }}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.payment_mode.label }}</label>
+      {{ form.payment_mode(class="w-full rounded-lg border border-gray-300 px-3 py-2") }}
+    </div>
+
+    <div class="pt-4">
+      {{ form.submit(class="bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded") }}
+    </div>
+  </form>
+</div>
 {% endblock %}

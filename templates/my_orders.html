@@ -2,36 +2,51 @@
 {% block title %}My Orders{% endblock %}
 
 {% block content %}
-  <h2>My Orders</h2>
+<div class="max-w-4xl mx-auto px-4 mt-10">
+  <h2 class="text-2xl font-bold text-center text-pink-600 mb-6">My Orders</h2>
 
   {% if orders %}
-    <ul>
+    <div class="flex flex-col gap-y-6">
       {% for order in orders %}
-        <li>
-          <strong>Item:</strong> {{ order.menu_item.name }} <br>
-          <strong>Bakery:</strong> {{ order.baker.baker_profile.bakery_name }} <br>
-          <strong>Price:</strong> ₹{{ order.menu_item.price }} <br>
+      <div class="bg-white border border-gray-200 rounded-xl p-5 shadow hover:shadow-md transition {% if loop.last %}mb-10{% endif %}">
+        <p class="text-lg font-semibold text-gray-800 mb-1">
+          {{ "Custom - " + order.cake_type if order.is_custom else order.menu_item.name }}
+        </p>
 
-          {% set color = 'orange' %}
-          {% if order.status == 'Accepted' %}
-          {% set color = 'green' %}
-          {% elif order.status == 'Declined' %}
-          {% set color = 'red' %}
-          {% elif order.status == 'Ready' %}
-          {% set color = 'blue' %}
-          {% elif order.status == 'Delivered' %}
-          {% set color = 'gray' %}
+        <p class="text-sm text-gray-600 mb-2">
+          <strong>Bakery:</strong> {{ order.baker.baker_profile.bakery_name }}
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-1 text-sm text-gray-700">
+          {% if order.is_custom %}
+            {% if order.estimated_price %}<p><strong>Price:</strong> ₹{{ order.estimated_price }}</p>{% endif %}
+            {% if order.weight %}<p><strong>Weight:</strong> {{ order.weight }} kg</p>{% endif %}
+            {% if order.tiers %}<p><strong>Tiers:</strong> {{ order.tiers }}</p>{% endif %}
+            {% if order.frosting %}<p><strong>Frosting:</strong> {{ order.frosting }}</p>{% endif %}
+            {% if order.topper %}<p><strong>Topper:</strong> {{ order.topper }}</p>{% endif %}
+            {% if order.theme %}<p><strong>Theme:</strong> {{ order.theme }}</p>{% endif %}
+            {% if order.message %}<p><strong>Message:</strong> {{ order.message }}</p>{% endif %}
+          {% else %}
+            <p><strong>Price:</strong> ₹{{ order.menu_item.price }}</p>
+            {% if order.message %}<p><strong>Message:</strong> {{ order.message }}</p>{% endif %}
           {% endif %}
 
-
-          <strong>Status:</strong>
-          <span style="color: '{{ color }}'">{{ order.status }}</span><br>
-
-          <hr>
-        </li>
+          <p><strong>Delivery Mode:</strong> {{ order.delivery_mode }}</p>
+          <p><strong>Payment Mode:</strong> {{ order.payment_mode }}</p>
+          <p><strong>Status:</strong>
+            <span class="px-2 py-1 rounded-full 
+              {% if order.status == 'Pending' %}bg-yellow-100 text-yellow-800
+              {% elif order.status == 'Confirmed' %}bg-green-100 text-green-800
+              {% else %}bg-gray-100 text-gray-800{% endif %}">
+              {{ order.status }}
+            </span>
+          </p>
+        </div>
+      </div>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
-    <p>You haven't placed any orders yet.</p>
+    <p class="text-center text-gray-600">You haven't placed any orders yet.</p>
   {% endif %}
+</div>
 {% endblock %}
