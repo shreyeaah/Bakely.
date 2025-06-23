@@ -24,3 +24,8 @@ A multi-tenant bakery platform where independent bakers can create their own dig
 | Auth        | SQLite + Werkzeug  |
 | Database    | SQLite (with SQLAlchemy)  |
 | Deployment  | (To be decided: Render, Railway, etc.) |
+
+
+
+![Screenshot 2025-06-23 195506](https://github.com/user-attachments/assets/4714ffa7-da42-40c7-a5f3-5e7a15da1a66)
+
