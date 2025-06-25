@@ -19,4 +19,4 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-import routes 
+from routes import *  # or import init_db if specific
