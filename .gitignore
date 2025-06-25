@@ -9,8 +9,7 @@ ENV/
 env/
 .venv/
 
-# Flask instance folder (if used)
-instance/
+
 
 # Flask settings
 *.env
