@@ -12,6 +12,10 @@ import base64
 
 
 STABILITY_API_KEY = os.getenv("STABILITY_API_KEY")
+@app.route('/init-db')
+def init_db():
+    db.create_all()
+    return " Database initialized!"
 
 @login_manager.user_loader
 def load_user(user_id):
