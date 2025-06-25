@@ -60,7 +60,7 @@
 <div class="flex flex-wrap justify-center gap-6">
   {% for item in menu_items %}
     <div class="bg-white shadow-md rounded-lg overflow-hidden w-64">
-      <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}"
+      <img src="{{ url_for('static', filename='uploads/' + (item.image_filename if item.image_filename else 'default.jpg')) }}"
            alt="{{ item.name }}" class="w-full h-40 object-cover">
       <div class="p-4 text-center">
         <h4 class="text-lg font-semibold text-gray-800">{{ item.name }}</h4>

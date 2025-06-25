@@ -6,9 +6,6 @@
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-3xl font-bold text-pink-700">Bakely</h1>
-    
-
-
   </div>
 
   <!-- Actions -->
@@ -29,8 +26,13 @@
   <div class="space-y-4">
     {% for item in items %}
     <div class="flex items-center bg-white shadow-sm border rounded-xl p-3 hover:shadow-md transition">
-      <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.name }}"
-        class="w-24 h-24 object-cover rounded-md mr-4">
+      {% if item.image_filename %}
+        <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.name }}"
+          class="w-24 h-24 object-cover rounded-md mr-4">
+      {% else %}
+        <img src="{{ url_for('static', filename='uploads/default.jpg') }}" alt="Default Image"
+          class="w-24 h-24 object-cover rounded-md mr-4">
+      {% endif %}
       <div class="flex-1">
         <h3 class="text-lg font-semibold text-gray-800">{{ item.name }}</h3>
         <p class="text-pink-600 font-medium">₹{{ item.price }}</p>
