@@ -5,7 +5,7 @@ from models import User, BakerProfile, MenuItem, CartItem, Order, BakerPricing
 from forms import RegisterForm, LoginForm, ApproveForm, DeclineForm, MenuItemForm, OrderForm, BakerProfileForm, BakerPricingForm
 from werkzeug.utils import secure_filename
 import os
-import json
+from sqlalchemy import func
 
 
 @login_manager.user_loader
@@ -167,7 +167,7 @@ def add_menu_item():
             price=form.price.data,
             description=form.description.data,
             image_filename=filename,
-            category=form.category.data,
+            category=form.category.data.strip().lower(),
             baker_id=current_user.id
         )
         db.session.add(item)
@@ -193,7 +193,7 @@ def edit_menu_item(item_id):
         item.name = form.name.data
         item.price = form.price.data
         item.description = form.description.data
-        item.category = form.category.data
+        item.category = form.category.data.strip().lower()
 
         if form.image.data:
             filename = secure_filename(form.image.data.filename)
@@ -494,8 +494,9 @@ def get_custom_price(baker_id):
         return redirect(request.referrer or url_for('view_bakery', baker_id=baker_id))
 
     # Fetch cake_types for the baker (needed for rendering the template)
-    cake_types = MenuItem.query.filter_by(baker_id=baker_id, category='cake').all()
-
+    cake_types = MenuItem.query.filter(
+    MenuItem.baker_id == baker_id,
+    func.lower(MenuItem.category) == 'cake').all()
     # Get user inputs
     weight = float(request.form.get("weight", 1))
     cake_type = request.form.get("cake_type")
