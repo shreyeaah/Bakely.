@@ -12,7 +12,7 @@ STABILITY_API_KEY = os.getenv("STABILITY_API_KEY")
 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'donkeyflyspillflower'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/database.db'
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
