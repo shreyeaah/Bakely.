@@ -17,9 +17,22 @@ def init_db():
     db.create_all()
     return " Database initialized!"
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.route('/create-admin')
+def create_admin():
+    from models import User
+    from app import db
+    from werkzeug.security import generate_password_hash
+
+    hashed_pw = generate_password_hash("admin123", method='sha256')
+    admin = User(username='admin', password=hashed_pw, role='admin', is_approved=True)
+    db.session.add(admin)
+    db.session.commit()
+    return "Admin user created!"
 
 @app.route('/')
 def index():
