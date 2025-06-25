@@ -6,22 +6,20 @@
     Place a Custom Order with {{ baker.baker_profile.bakery_name }}
   </h2>
 
-  <form method="POST" action="{{ url_for('place_custom_order', baker_id=baker.id) }}"
-        enctype="multipart/form-data" id="customOrderForm"
-        class="space-y-5">
+  <form method="POST" action="{{ url_for('place_custom_order', baker_id=baker.id) }}" enctype="multipart/form-data"
+    id="customOrderForm" class="space-y-5">
 
     <!-- Weight -->
     <div>
       <label class="block font-semibold text-gray-700">Weight (in kg)</label>
-      <input type="number" id="weight" name="weight" step="0.5"
-             class="w-full border border-gray-300 rounded px-3 py-2" required>
+      <input type="number" id="weight" name="weight" step="0.5" class="w-full border border-gray-300 rounded px-3 py-2"
+        required>
     </div>
 
     <!-- Cake Type -->
     <div>
       <label class="block font-semibold text-gray-700">Cake Type</label>
-      <select name="cake_type" id="cake_type"
-              class="w-full border border-gray-300 rounded px-3 py-2" required>
+      <select name="cake_type" id="cake_type" class="w-full border border-gray-300 rounded px-3 py-2" required>
         {% for item in cake_types %}
         <option value="{{ item.name }}" data-price="{{ item.price }}">{{ item.name }}</option>
         {% endfor %}
@@ -31,8 +29,7 @@
     <!-- Frosting -->
     <div>
       <label class="block font-semibold text-gray-700">Frosting</label>
-      <select id="frosting" name="frosting"
-              class="w-full border border-gray-300 rounded px-3 py-2" required>
+      <select id="frosting" name="frosting" class="w-full border border-gray-300 rounded px-3 py-2" required>
         <option value="Buttercream">Buttercream</option>
         <option value="Fondant">Fondant</option>
         <option value="Whipped Cream">Whipped Cream</option>
@@ -42,29 +39,26 @@
     <!-- Tiers -->
     <div>
       <label class="block font-semibold text-gray-700">Number of Tiers</label>
-      <input type="number" id="tiers" name="tiers" min="1"
-             class="w-full border border-gray-300 rounded px-3 py-2" required>
+      <input type="number" id="tiers" name="tiers" min="1" class="w-full border border-gray-300 rounded px-3 py-2"
+        required>
     </div>
 
     <!-- Theme -->
     <div>
       <label class="block font-semibold text-gray-700">Theme</label>
-      <input type="text" name="theme"
-             class="w-full border border-gray-300 rounded px-3 py-2">
+      <input type="text" name="theme" class="w-full border border-gray-300 rounded px-3 py-2">
     </div>
 
     <!-- Message -->
     <div>
       <label class="block font-semibold text-gray-700">Message on Cake</label>
-      <input type="text" name="message"
-             class="w-full border border-gray-300 rounded px-3 py-2">
+      <input type="text" name="message" class="w-full border border-gray-300 rounded px-3 py-2">
     </div>
 
     <!-- Topper -->
     <div>
       <label class="block font-semibold text-gray-700">Topper</label>
-      <select id="topper" name="topper"
-              class="w-full border border-gray-300 rounded px-3 py-2">
+      <select id="topper" name="topper" class="w-full border border-gray-300 rounded px-3 py-2">
         <option value="None">None</option>
         <option value="Happy Birthday">Happy Birthday</option>
         <option value="Bride & Groom">Bride & Groom</option>
@@ -75,15 +69,13 @@
     <!-- Reference Image -->
     <div>
       <label class="block font-semibold text-gray-700">Reference Image</label>
-      <input type="file" name="reference_img"
-             class="w-full border border-gray-300 rounded px-3 py-2">
+      <input type="file" name="reference_img" class="w-full border border-gray-300 rounded px-3 py-2">
     </div>
 
     <!-- Delivery Mode -->
     <div>
       <label class="block font-semibold text-gray-700">Delivery Mode</label>
-      <select name="delivery_mode"
-              class="w-full border border-gray-300 rounded px-3 py-2" required>
+      <select name="delivery_mode" class="w-full border border-gray-300 rounded px-3 py-2" required>
         <option value="Pickup">Pickup</option>
         <option value="Home Delivery">Home Delivery</option>
       </select>
@@ -92,8 +84,7 @@
     <!-- Payment Mode -->
     <div>
       <label class="block font-semibold text-gray-700">Payment Mode</label>
-      <select name="payment_mode"
-              class="w-full border border-gray-300 rounded px-3 py-2" required>
+      <select name="payment_mode" class="w-full border border-gray-300 rounded px-3 py-2" required>
         <option value="Cash on Delivery">Cash on Delivery</option>
         <option value="UPI">UPI</option>
         <option value="Card">Card</option>
@@ -107,14 +98,28 @@
 
     <!-- Buttons -->
     <div class="flex flex-col sm:flex-row sm:gap-4 mt-4">
+
       <button type="button" onclick="calculatePrice()"
-              class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-lg shadow">
+        class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-lg shadow">
         Get Price
       </button>
+
+      <button type="button" id="generateImageBtn" onclick="generateCakeImage()"
+        class="bg-purple-500 hover:bg-purple-600 text-white px-5 py-2 rounded-lg shadow mt-3 sm:mt-0 hidden">
+        Generate Cake Image
+      </button>
+
       <button type="submit" id="orderNowBtn"
-              class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow mt-3 sm:mt-0 d-none">
+        class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg shadow mt-3 sm:mt-0 d-none">
         Order Now
       </button>
+
+    </div>
+    <!-- Preview Generated Image -->
+    <div id="generatedImagePreview" class="mt-4 text-center hidden">
+      <h3 class="text-lg font-semibold text-gray-700 mb-2">Your Custom Cake Preview:</h3>
+      <img id="cakeImage" class="mx-auto rounded-lg shadow-md" style="max-height: 300px;" alt="Preview not available">
+
     </div>
   </form>
 </div>
@@ -149,7 +154,46 @@
     const finalPrice = total.toFixed(2);
     document.getElementById('priceDisplay').innerText = `Estimated Price: ₹${finalPrice}`;
     document.getElementById('estimated_price').value = finalPrice;
+    document.getElementById('generateImageBtn').classList.remove('hidden');
     document.getElementById('orderNowBtn').classList.remove('d-none');
+  }
+
+  async function generateCakeImage() {
+    const tiers = document.getElementById('tiers').value;
+    const frosting = document.getElementById('frosting').value;
+    const cakeType = document.getElementById('cake_type').value;
+    const theme = document.querySelector('[name="theme"]').value || "no theme";
+    const topper = document.getElementById('topper').value;
+    const weight = document.getElementById('weight').value;
+
+    const data = {
+      tiers: tiers,
+      flavor: cakeType,
+      frosting: frosting,
+      theme: theme,
+      topper: topper,
+      weight: weight
+    };
+
+    const res = await fetch('/generate-cake-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    console.log("Raw response JSON:", result);
+    console.log("Image response:", result.image);
+
+    if (result.image) {
+      console.log("Image result:", result);
+      console.log("Image src string length:", result.image.length);
+      document.getElementById('cakeImage').src = result.image;
+      document.getElementById('generatedImagePreview').classList.remove('hidden');
+      document.getElementById('cakeImage').alt = "Your Custom Cake Preview";
+    } else {
+      alert('Image generation failed. Try again!');
+    }
   }
 </script>
 {% endblock %}

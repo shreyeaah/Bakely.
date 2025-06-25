@@ -1,10 +1,14 @@
+from dotenv import load_dotenv
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 
-
+load_dotenv()
+STABILITY_API_KEY = os.getenv("STABILITY_API_KEY")
 
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'donkeyflyspillflower'

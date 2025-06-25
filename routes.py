@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, abort, flash, request
+from flask import render_template, redirect, url_for, abort, flash, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, bcrypt, login_manager
 from models import User, BakerProfile, MenuItem, CartItem, Order, BakerPricing
@@ -6,7 +6,12 @@ from forms import RegisterForm, LoginForm, ApproveForm, DeclineForm, MenuItemFor
 from werkzeug.utils import secure_filename
 import os
 from sqlalchemy import func
+import requests
+from dotenv import load_dotenv
+import base64
 
+
+STABILITY_API_KEY = os.getenv("STABILITY_API_KEY")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -606,3 +611,60 @@ def remove_from_cart(item_id):
     db.session.commit()
     flash("Item removed from cart", "info")
     return redirect(url_for('view_cart'))
+
+@app.route('/generate-cake-image', methods=['POST'])
+def generate_cake_image():
+    try:
+        data = request.get_json()
+        print("Received data:", data)
+
+        weight = data.get('weight', '1')
+        tiers = data.get('tiers', '1')
+        cake_type = data.get('flavor', 'Vanilla')
+        frosting = data.get('frosting', 'Buttercream')
+        topper = data.get('topper', 'None')
+        theme = data.get('theme', 'Simple')
+
+        prompt = (
+            f"A {tiers}-tier {cake_type} cake with {frosting} frosting, "
+            f"{topper} topper, {theme} theme, weight approx. {weight} kg, professional photo"
+        )
+        print("Generated prompt:", prompt)
+
+        url = "https://api.stability.ai/v2beta/stable-image/generate/core"
+        headers = {
+            "Authorization": f"Bearer {STABILITY_API_KEY}",
+            "Accept": "application/json"
+        }
+
+        files = {
+            "prompt": (None, prompt),
+            "output_format": (None, "png"),
+            "model": (None, "stable-diffusion-xl-v1")
+        }
+
+        response = requests.post(url, headers=headers, files=files)
+        response.raise_for_status()
+
+        # Parse the response as JSON
+        result = response.json()
+        print("API response keys:", result.keys())
+
+        # Extract base64 image string
+        base64_img = result.get("image")
+        if not base64_img:
+            print("No 'image' key found in response")
+            return jsonify({'error': 'Invalid image response from API'}), 500
+
+        image_data_url = f"data:image/png;base64,{base64_img}"
+        print("Returned base64 string (first 100 chars):", image_data_url[:100])
+
+        return jsonify({'image': image_data_url})
+
+    except requests.exceptions.HTTPError as e:
+        print("HTTP Error:", e.response.status_code)
+        print("Response Text:", e.response.text)
+        return jsonify({'error': 'Image generation failed'}), 500
+    except Exception as e:
+        print("Other Error:", str(e))
+        return jsonify({'error': 'Image generation failed'}), 500
