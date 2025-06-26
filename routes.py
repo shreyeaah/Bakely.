@@ -4,7 +4,7 @@ from app import app, db, bcrypt, login_manager
 from models import User, BakerProfile, MenuItem, CartItem, Order, BakerPricing
 from forms import RegisterForm, LoginForm, ApproveForm, DeclineForm, MenuItemForm, OrderForm, BakerProfileForm, BakerPricingForm
 from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash
+
 import os
 from sqlalchemy import func
 import requests
@@ -43,18 +43,23 @@ def create_admin():
         if existing_admin:
             return "Admin already exists."
 
-        # Get password from env
+        # Get password from environment variable
         admin_password = os.getenv("ADMIN_PASSWORD")
         if not admin_password:
             return "Admin password not set!", 500
 
-        hashed_pw = generate_password_hash(admin_password, method='sha256')
+        # Use Flask-Bcrypt to hash password
+        from app import bcrypt
+        hashed_pw = bcrypt.generate_password_hash(admin_password).decode('utf-8')
+
+        # Create admin user
         admin = User(username='admin', password=hashed_pw, role='admin', is_approved=True)
         db.session.add(admin)
         db.session.commit()
-        return "Admin user created successfully."
+
+        return "✅ Admin user created successfully."
     except Exception as e:
-        return f"Failed to create admin: {str(e)}", 500
+        return f"❌ Failed to create admin: {str(e)}", 500
 
 
 @app.route('/')
