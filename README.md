@@ -21,6 +21,10 @@ A multi-tenant bakery platform where independent bakers can create their own dig
 
 Bakely uses the **Stability AI** API to generate realistic cake images based on custom user inputs such as frosting, layers, toppers, and themes. This enhances the user's ability to visualize their order before placing it — making the experience smarter, more personalized, and fun.
 
+##  Live Demo
+
+Check out the live app here: [https://bakely-2foa.onrender.com](https://bakely-2foa.onrender.com)
+
 
 ##  Tech Stack
 
