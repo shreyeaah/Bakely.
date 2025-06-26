@@ -25,8 +25,7 @@ def initialize_admin():
         except Exception as e:
             print(f"⚠️ Skipping admin creation: {e}")
 
-
+initialize_admin()
 
 if __name__ == '__main__':
-    initialize_admin()
     app.run()
