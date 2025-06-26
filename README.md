@@ -39,32 +39,38 @@ Bakely uses the **Stability AI** API to generate realistic cake images based on 
 ```bash
 git clone https://github.com/shreyeaah/Bakely..git
 cd bakely
-
+```
 ### 2. Create a virtual environment and install dependencies
+```bash
 python -m venv .venv
 .venv\Scripts\activate on Windows
 pip install -r requirements.txt
-
+```
 ### 3. Set environment variables
 Create a .env file or set the following variables:
+```bash
 SECRET_KEY=your-secret
 DATABASE_URL=postgres://...
 ADMIN_PASSWORD=your-admin-password
 STABILITY_API_KEY=your-stability-api-key
+```
 
 ### 4. Initialize the database
+```bash
 flask db init
 flask db migrate -m "Initial"
 flask db upgrade
-
+```
 ### 5. Run the server
+```bash
 python run.py
-
+```
 ### 6. Deployment on Render
+```bash
 Build command: pip install -r requirements.txt
 Start command: gunicorn run:app
 Set all required environment variables under Render → Environment.
-
+```
 ## Admin Access
 The admin user is auto-created on first deploy if ADMIN_PASSWORD is set in the environment. Use:
   Username: admin
