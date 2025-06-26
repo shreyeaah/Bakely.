@@ -26,15 +26,14 @@ def init_db():
     import os
 
     try:
-        
-        os.makedirs(os.path.join(os.getcwd(), 'instance'), exist_ok=True)
+        instance_path = os.path.join(os.getcwd(), 'instance')
+        os.makedirs(instance_path, exist_ok=True)
 
-        
         db.create_all()
-
         return "Database initialized!"
     except Exception as e:
         return f"Error: {str(e)}", 500
+
 
 @app.route('/create-admin')
 def create_admin():

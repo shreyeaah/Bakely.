@@ -10,9 +10,10 @@ from flask_migrate import Migrate
 load_dotenv()
 STABILITY_API_KEY = os.getenv("STABILITY_API_KEY")
 
+BASE_DIR = os.getcwd()
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'donkeyflyspillflower'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'database.db')}"
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
