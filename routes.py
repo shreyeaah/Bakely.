@@ -20,47 +20,6 @@ STABILITY_API_KEY = os.getenv("STABILITY_API_KEY")
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@app.route('/init-db')
-def init_db():
-    from app import db
-    import os
-
-    try:
-        instance_path = os.path.join(os.getcwd(), 'instance')
-        os.makedirs(instance_path, exist_ok=True)
-
-        db.create_all()
-        return "Database initialized!"
-    except Exception as e:
-        return f"Error: {str(e)}", 500
-
-
-@app.route('/create-admin')
-def create_admin():
-    try:
-        # Check if admin already exists
-        existing_admin = User.query.filter_by(username='admin').first()
-        if existing_admin:
-            return "Admin already exists."
-
-        # Get password from environment variable
-        admin_password = os.getenv("ADMIN_PASSWORD")
-        if not admin_password:
-            return "Admin password not set!", 500
-
-        # Use Flask-Bcrypt to hash password
-        from app import bcrypt
-        hashed_pw = bcrypt.generate_password_hash(admin_password).decode('utf-8')
-
-        # Create admin user
-        admin = User(username='admin', password=hashed_pw, role='admin', is_approved=True)
-        db.session.add(admin)
-        db.session.commit()
-
-        return "✅ Admin user created successfully."
-    except Exception as e:
-        return f"❌ Failed to create admin: {str(e)}", 500
-
 
 @app.route('/')
 def index():
