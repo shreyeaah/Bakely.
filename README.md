@@ -80,13 +80,25 @@ The admin user is auto-created on first deploy if ADMIN_PASSWORD is set in the e
 ![Screenshot 2025-06-25 161909](https://github.com/user-attachments/assets/341cf165-0f87-4efe-a1ce-496c53a341c3)
 
 
-### User Page:
+### User Dashboard:
 ![Screenshot 2025-06-25 161955](https://github.com/user-attachments/assets/911da5ab-635c-493e-b700-a0f7e9eb04a7)
-Bakery Profile:
+
 ![Screenshot 2025-06-25 163904](https://github.com/user-attachments/assets/ca3af1e5-aa44-4d75-b48f-fee98084de43)
 ![Screenshot 2025-06-25 162058](https://github.com/user-attachments/assets/0265befb-23ae-46e9-951f-0b45c75e5c42)
 ![Screenshot 2025-06-25 162129](https://github.com/user-attachments/assets/4998c05c-d931-4f2d-bd95-1f6e8f18b485)
+![Screenshot 2025-06-25 162148](https://github.com/user-attachments/assets/a7a627f9-7d1b-4c7e-a80d-b8eabf9b866c)
+![Screenshot 2025-06-25 162249](https://github.com/user-attachments/assets/81e68426-f5a3-465d-a14d-b759d6c1ff4e)
+![Screenshot 2025-06-25 162507](https://github.com/user-attachments/assets/5248bc61-d5a3-4a38-9329-bb81ab6db17d)
+![Screenshot 2025-06-25 162446](https://github.com/user-attachments/assets/a6571ad5-ad3b-4044-832d-10927a1c01b1)
 
-![Screenshot 2025-06-25 162058](https://github.com/user-attachments/assets/7bd533a5-fd3a-4f43-8aac-57578adf87d9)
-![Screenshot 2025-06-25 162058](https://github.com/user-attachments/assets/7bd533a5-fd3a-4f43-8aac-57578adf87d9)
+### Baker Dashboard
+![Screenshot 2025-06-25 162558](https://github.com/user-attachments/assets/50d64d11-e7d9-4093-a043-735a1aaecfc2)
+![Screenshot 2025-06-25 162759](https://github.com/user-attachments/assets/35d15123-4771-4f6d-aa9d-703dff03ca47)
+![Screenshot 2025-06-25 162739](https://github.com/user-attachments/assets/62892acc-ef1a-461c-b9e1-89ce1458ddef)
+![Screenshot 2025-06-25 162620](https://github.com/user-attachments/assets/22a725e1-596a-4b8a-b443-14f73419bc29)
+![Screenshot 2025-06-25 162639](https://github.com/user-attachments/assets/85dca543-5541-40ec-bb97-1497cd96f637)
+
+### Admin Dashboard:
+![Screenshot 2025-06-25 164105](https://github.com/user-attachments/assets/e52f6560-2144-467f-ab90-44169224ff71)
+
 
