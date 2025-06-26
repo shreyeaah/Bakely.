@@ -20,7 +20,7 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-from routes import *  # or import init_db if specific
+
 
 @app.before_first_request
 def initialize_app():
@@ -43,3 +43,5 @@ def initialize_app():
         admin = User(username='admin', password=hashed_pw, role='admin', is_approved=True)
         db.session.add(admin)
         db.session.commit()
+
+from routes import *  
