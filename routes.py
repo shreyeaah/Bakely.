@@ -22,8 +22,19 @@ def load_user(user_id):
 
 @app.route('/init-db')
 def init_db():
-    db.create_all()
-    return " Database initialized!"
+    from app import db
+    import os
+
+    try:
+        
+        os.makedirs(os.path.join(os.getcwd(), 'instance'), exist_ok=True)
+
+        
+        db.create_all()
+
+        return "Database initialized!"
+    except Exception as e:
+        return f"Error: {str(e)}", 500
 
 @app.route('/create-admin')
 def create_admin():
