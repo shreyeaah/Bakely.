@@ -1,6 +1,6 @@
 # Bakely. - AI-Powered Cake Builder + Multi-Bakery Platform
 
-A multi-tenant bakery platform where independent bakers can create their own digital storefronts, manage custom cake orders, showcase menus, and interact directly with customers. It is designed to empower local bakers with modern online tools—without any centralized control.It also enables customers to customize and order cakes online. The platform is enhanced with AI-generated cake visualizations using Stability AI, providing an interactive and intelligent ordering experience.
+A multi-tenant bakery platform where independent bakers can create their own digital storefronts, manage custom cake orders, showcase menus, and interact directly with customers. It is designed to empower local bakers with modern online tools.It also enables customers to customize and order cakes online. The platform is enhanced with AI-generated cake visualizations using Stability AI, providing an interactive and intelligent ordering experience.
 
 ###  For Customers:
 - Browse local bakeries and menus
